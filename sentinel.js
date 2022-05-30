@@ -10,11 +10,13 @@ const video = document.getElementById("video");
 const outputContainer = document.getElementById("output");
 const outputText = document.getElementById("motionScoreData");
 
+// virtual canvas to run image diff on
 const canvas = document.createElement("canvas");
 canvas.width = VIDEO_WIDTH;
 canvas.height = VIDEO_HEIGHT;
 const context = canvas.getContext("2d");
 
+// motion map that's shown to the user
 const motionMap = document.getElementById("motionMap");
 motionMap.width = VIDEO_WIDTH;
 motionMap.height = VIDEO_HEIGHT;
@@ -85,13 +87,13 @@ function refreshIndicator() {
 }
 
 function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
-  var imageScore = 0;
+  let imageScore = 0;
   const constructedImageData = motionMapCtx.createImageData(
     VIDEO_WIDTH,
     VIDEO_HEIGHT
   );
 
-  for (var i = 0; i < imageData.data.length; i += 4) {
+  for (let i = 0; i < imageData.data.length; i += 4) {
     const rDiff = Math.abs(imageData.data[i] - previousImageData.data[i]);
     const gDiff = Math.abs(
       imageData.data[i + 1] - previousImageData.data[i + 1]
@@ -105,24 +107,26 @@ function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
     constructedImageData.data[i + 2] = bDiff;
     constructedImageData.data[i + 3] = ALPHA_VALUE;
 
-    var pixelScore = rDiff + gDiff + bDiff;
-
-    imageScore += pixelScore;
+    imageScore += rDiff + gDiff + bDiff;
   }
 
   if (imageScore >= imageScoreThreshold) {
     isTriggered = true;
     indicatorRemainingLifespan = INDICATOR_LIFESPAN;
-
     motionMapCtx.putImageData(constructedImageData, 0, 0);
   } else {
     motionMapCtx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
   }
-  outputText.innerHTML = `${
-    isTriggered
-      ? elapsedCycles > ELAPSED_CYCLES_THRESHOLD
-        ? "PROLONGED MOTION DETECTED"
-        : "MOTION DETECTED"
-      : "LOOKS QUIET"
-  }<br />Diff Score: ${imageScore}, sustained for ${elapsedCycles} cycles of ${CAPTURE_INTERVAL} ms each`;
+
+  let outputMessage;
+
+  if (isTriggered && elapsedCycles > ELAPSED_CYCLES_THRESHOLD) {
+    outputMessage = "PROLONGED MOTION DETECTED";
+  } else if (isTriggered && elapsedCycles <= ELAPSED_CYCLES_THRESHOLD) {
+    outputMessage = "MOTION DETECTED";
+  } else {
+    outputMessage = "NO MOTION DETECTED";
+  }
+
+  outputText.innerHTML = `${outputMessage}<br />Diff Score: ${imageScore}, sustained for ${elapsedCycles} cycles of ${CAPTURE_INTERVAL} ms each`;
 }
