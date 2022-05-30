@@ -2,6 +2,11 @@
   max-width: 100%;
 }
 
+h2 {
+  background: cornflowerblue;
+  color: white;
+}
+
 #main-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -19,15 +24,16 @@
 }
 
 #video-feed video {
-  max-width: 100%;
+  width: 100%;
 }
 
 #motion-map {
   grid-area: motionMap;
+  background-color: black;
 }
 
 #motionMap {
-  max-width: 100%;
+  width: 100%;
   background-color: black;
 }
 
@@ -35,6 +41,14 @@
   grid-area: motionIndicator;
   background-color: green;
   height: 50px;
+  text-align: center;
+  vertical-align: middle;
+  font-family: monospace;
+}
+
+#motion-indicator span {
+  background-color: white;
+  color: black;
 }
 
 #output-images {
