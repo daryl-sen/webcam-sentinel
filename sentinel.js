@@ -89,7 +89,10 @@ function refreshIndicator() {
 
 function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
   var imageScore = 0;
-  const motionMapData = [];
+  const constructedImageData = motionMapCtx.createImageData(
+    VIDEO_WIDTH,
+    VIDEO_HEIGHT
+  );
 
   for (var i = 0; i < imageData.data.length; i += 4) {
     const rDiff = Math.abs(imageData.data[i] - previousImageData.data[i]);
@@ -100,7 +103,10 @@ function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
       imageData.data[i + 2] - previousImageData.data[i + 2]
     );
 
-    motionMapData.push(...[rDiff, gDiff, bDiff, ALPHA_VALUE]);
+    constructedImageData.data[i] = rDiff;
+    constructedImageData.data[i + 1] = gDiff;
+    constructedImageData.data[i + 2] = bDiff;
+    constructedImageData.data[i + 3] = ALPHA_VALUE;
 
     var pixelScore = rDiff + gDiff + bDiff;
 
@@ -112,11 +118,8 @@ function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
     isTriggered = true;
     indicatorRemainingLifespan = INDICATOR_LIFESPAN;
 
-    const constructedImageData = motionMapCtx.createImageData(
-      VIDEO_WIDTH,
-      VIDEO_HEIGHT
-    );
-    constructedImageData.data = motionMapData;
     motionMapCtx.putImageData(constructedImageData, 0, 0);
+  } else {
+    motionMapCtx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
   }
 }
