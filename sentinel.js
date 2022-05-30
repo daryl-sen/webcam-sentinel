@@ -1,13 +1,14 @@
 const VIDEO_WIDTH = 640;
 const VIDEO_HEIGHT = 480;
 const CAPTURE_INTERVAL = 100;
-const DIFF_THRESHOLD = 3000000;
+const DIFF_THRESHOLD = 2000000;
 const ALPHA_VALUE = 255;
 const ELAPSED_CYCLES_THRESHOLD = 20;
 const INDICATOR_LIFESPAN = 10;
 
 const video = document.getElementById("video");
 const outputContainer = document.getElementById("output");
+const outputText = document.getElementById("motionScoreData");
 
 const canvas = document.createElement("canvas");
 canvas.width = VIDEO_WIDTH;
@@ -61,10 +62,6 @@ function capture() {
   }
 }
 
-// function createImage(imageUrl) {
-//   document.getElementById("output").innerHTML = `<img src="${imageUrl}" />`;
-// }
-
 function refreshIndicator() {
   const indicatorContainer = document.getElementById("motion-indicator");
 
@@ -114,7 +111,6 @@ function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
   }
 
   if (imageScore >= imageScoreThreshold) {
-    console.log(imageScore);
     isTriggered = true;
     indicatorRemainingLifespan = INDICATOR_LIFESPAN;
 
@@ -122,4 +118,11 @@ function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
   } else {
     motionMapCtx.clearRect(0, 0, VIDEO_WIDTH, VIDEO_HEIGHT);
   }
+  outputText.innerHTML = `${
+    isTriggered
+      ? elapsedCycles > ELAPSED_CYCLES_THRESHOLD
+        ? "PROLONGED MOTION DETECTED"
+        : "MOTION DETECTED"
+      : "LOOKS QUIET"
+  }<br />Diff Score: ${imageScore}, sustained for ${elapsedCycles} cycles of ${CAPTURE_INTERVAL} ms each`;
 }
