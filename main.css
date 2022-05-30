@@ -1,0 +1,41 @@
+#output {
+  max-width: 100%;
+}
+
+#main-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+    "videoFeed motionMap"
+    "motionIndicator motionIndicator"
+    "outputImages outputImages";
+  gap: 1em;
+}
+
+#video-feed {
+  grid-area: videoFeed;
+  background-color: gray;
+}
+
+#video-feed video {
+  max-width: 100%;
+}
+
+#motion-map {
+  grid-area: motionMap;
+}
+
+#motionMap {
+  max-width: 100%;
+}
+
+#motion-indicator {
+  grid-area: motionIndicator;
+  background-color: green;
+  height: 50px;
+}
+
+#output-images {
+  grid-area: outputImages;
+}
