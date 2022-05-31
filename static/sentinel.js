@@ -1,10 +1,11 @@
 const VIDEO_WIDTH = 640;
 const VIDEO_HEIGHT = 480;
 const CAPTURE_INTERVAL = 100;
-const DIFF_THRESHOLD = 2000000;
+const DIFF_THRESHOLD = 3500000;
 const ALPHA_VALUE = 255;
 const ELAPSED_CYCLES_THRESHOLD = 20;
 const INDICATOR_LIFESPAN = 10;
+const RESPONSE_COOLDOWN = 50;
 
 const video = document.getElementById("video");
 const outputContainer = document.getElementById("output");
@@ -26,6 +27,8 @@ let previousImageData;
 let isTriggered = false;
 let indicatorRemainingLifespan = INDICATOR_LIFESPAN;
 let elapsedCycles = 0;
+let responseCooldown = 0;
+let hasRecentlySentAlert = false;
 
 const constraints = {
   audio: false,
@@ -33,6 +36,8 @@ const constraints = {
 };
 
 navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+
+setInterval(capture, CAPTURE_INTERVAL);
 
 function success(stream) {
   const video = document.getElementById("video");
@@ -42,8 +47,6 @@ function success(stream) {
 function error(error) {
   console.log(error);
 }
-
-setInterval(capture, CAPTURE_INTERVAL);
 
 function capture() {
   refreshIndicator();
@@ -70,6 +73,12 @@ function refreshIndicator() {
   if (isTriggered && indicatorRemainingLifespan > 0) {
     if (elapsedCycles > ELAPSED_CYCLES_THRESHOLD) {
       indicatorContainer.style.backgroundColor = "red";
+      if (responseCooldown > 0) {
+        responseCooldown--;
+      } else {
+        responseCooldown = RESPONSE_COOLDOWN;
+        createAlert();
+      }
     } else {
       indicatorContainer.style.backgroundColor = "yellow";
     }
@@ -129,4 +138,10 @@ function getImageDiff(imageScoreThreshold, imageData, previousImageData) {
   }
 
   outputText.innerHTML = `${outputMessage}<br />Diff Score: ${imageScore}, sustained for ${elapsedCycles} cycles of ${CAPTURE_INTERVAL} ms each`;
+}
+
+function createAlert() {
+  fetch("/api/alert").then((response) => {
+    console.log("Alert Sent!");
+  });
 }
