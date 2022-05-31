@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from twilio.rest import Client
 import json
+from datetime import datetime
 
 load_dotenv()
 
@@ -26,6 +27,7 @@ def run_application():
 
 @app.route("/api/alert")
 def alert():
+    current_time_string = datetime.now().strftime("%H:%M:%S, %m/%d/%Y")
     account_sid = os.environ["TWILIO_ACCOUNT_SID"]
     auth_token = os.environ["TWILIO_AUTH_TOKEN"]
     from_number = os.environ["TWILIO_PHONE_NUMBER"]
@@ -33,7 +35,7 @@ def alert():
 
     client = Client(account_sid, auth_token)
     client.messages.create(
-        body="Alert triggered by Web Sentinel",
+        body=f"Alert triggered by Web Sentinel at {current_time_string}",
         from_=from_number,
         to=to_number,
     )
