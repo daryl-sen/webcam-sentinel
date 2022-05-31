@@ -26,16 +26,16 @@ def run_application():
 
 @app.route("/api/alert")
 def alert():
-    account_sid = os.environ["TWILIO_ACCOUNT_SID"]
-    auth_token = os.environ["TWILIO_AUTH_TOKEN"]
-    from_number = os.environ["TWILIO_PHONE_NUMBER"]
-    to_number = os.environ["TARGET_PHONE_NUMBER"]
+    # account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+    # auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+    # from_number = os.environ["TWILIO_PHONE_NUMBER"]
+    # to_number = os.environ["TARGET_PHONE_NUMBER"]
 
-    client = Client(account_sid, auth_token)
-    client.messages.create(
-        body="Alert triggered by Web Sentinel",
-        from_=from_number,
-        to=to_number,
-    )
+    # client = Client(account_sid, auth_token)
+    # client.messages.create(
+    #     body="Alert triggered by Web Sentinel",
+    #     from_=from_number,
+    #     to=to_number,
+    # )
 
     return json.dumps({"alert": True})
