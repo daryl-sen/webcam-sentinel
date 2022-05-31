@@ -27,6 +27,9 @@ def run_application():
 
 @app.route("/api/alert")
 def alert():
+    if os.environ["DISABLE_ALERT"] == "true":
+        return json.dumps({"alert": False})
+
     current_time_string = datetime.now().strftime("%H:%M:%S, %m/%d/%Y")
     account_sid = os.environ["TWILIO_ACCOUNT_SID"]
     auth_token = os.environ["TWILIO_AUTH_TOKEN"]
