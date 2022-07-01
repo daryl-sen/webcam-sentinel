@@ -1,5 +1,5 @@
 ## Asana ticket link
-Link to your ticket in Asana
+Link to your ticket in Asana. Also, link this PR in your Asana ticket.
 ## Outline changes
 In simple and general terms, what were the changes you made?
 ## Why do we need these changes?
